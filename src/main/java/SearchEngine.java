@@ -1,5 +1,5 @@
-import java.util.List;
+import org.json.simple.JSONObject;
 
 public interface SearchEngine {
-    List<PageEntry> search(String word);
+    String search(String word);
 }
