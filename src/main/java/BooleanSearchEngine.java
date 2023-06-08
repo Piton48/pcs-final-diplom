@@ -42,8 +42,7 @@ public class BooleanSearchEngine implements SearchEngine {
 
     @Override
     public String search(String word) {
-        Gson gson = new Gson();
-        return gson.toJson(initData.get(word.toLowerCase()));
+        return new Gson().toJson(initData.get(word.toLowerCase()));
     }
 
 }
