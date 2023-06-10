@@ -13,7 +13,7 @@ public class Client {
              BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
 
             System.out.println(in.readLine());
-            out.println("бизнес технологии");
+            out.println("бизнес");
             System.out.println(in.readLine());
 
         }

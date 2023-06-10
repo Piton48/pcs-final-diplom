@@ -72,7 +72,7 @@ public class BooleanSearchEngine implements SearchEngine {
                         & temp.getPage() == page.getPage()) temp.setCount(temp.getCount() + page.getCount());
             if (!result.contains(temp)) result.add(temp);
         }
-
+        Collections.sort(result);
         return new Gson().toJson(result);
 
     }
