@@ -23,9 +23,9 @@ public class BooleanSearchEngine implements SearchEngine {
                     List<String> wordsFromPage = List.of(textFromPage.split("\\P{IsAlphabetic}+"));
 
                     Map<String, Integer> freqs = new HashMap<>();
-                    for (String word : wordsFromPage) {
+                    for (String word : wordsFromPage)
                         freqs.put(word.toLowerCase(), freqs.getOrDefault(word, 0) + 1);
-                    }
+
 
                     for (Map.Entry<String, Integer> entry : freqs.entrySet()) {
                         PageEntry pageEntry = new PageEntry(file.getName(), i, entry.getValue());
@@ -35,9 +35,8 @@ public class BooleanSearchEngine implements SearchEngine {
             }
         }
 
-        for (Map.Entry<String, List<PageEntry>> entry : initData.entrySet()) {
+        for (Map.Entry<String, List<PageEntry>> entry : initData.entrySet())
             Collections.sort(entry.getValue());
-        }
 
         String text;
         FileInputStream inputStream = new FileInputStream("stop-ru.txt");

@@ -6,13 +6,14 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         BooleanSearchEngine engine = new BooleanSearchEngine(new File("pdfs\\"));
+
         try (ServerSocket serverSocket = new ServerSocket(8989)) {
             while (true) {
                 try (Socket socket = serverSocket.accept();
                      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      PrintWriter out = new PrintWriter(socket.getOutputStream())) {
 
-                    out.println("Введите запрос");
+                    out.println("Введите запрос в виде слова, или строки");
                     out.flush();
                     String word = in.readLine();
                     if (isWord(word)) {
@@ -27,7 +28,7 @@ public class Main {
         }
     }
 
-    private static boolean isWord(String word){
+    private static boolean isWord(String word) {
         String[] words = word.split("\\P{IsAlphabetic}+");
         if (words.length == 1) return true;
         return false;
