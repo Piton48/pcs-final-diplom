@@ -15,7 +15,9 @@ public class Main {
                     out.println("Введите запрос");
                     out.flush();
                     String word = in.readLine();
-                    out.println(engine.search(word));
+                    if (isWord(word)) {
+                        out.println(engine.search(word));
+                    } else out.println(engine.searchLine(word));
 
                 }
             }
@@ -24,4 +26,11 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    private static boolean isWord(String word){
+        String[] words = word.split("\\P{IsAlphabetic}+");
+        if (words.length == 1) return true;
+        return false;
+    }
+
 }

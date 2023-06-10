@@ -2,14 +2,14 @@ import com.google.gson.Gson;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
+import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class BooleanSearchEngine implements SearchEngine {
-    private Map<String, List<PageEntry>> initData = new HashMap<>();
-
+    private final Map<String, List<PageEntry>> initData = new HashMap<>();
+    private final Set<String> stopWords = new HashSet<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
 
@@ -34,15 +34,48 @@ public class BooleanSearchEngine implements SearchEngine {
                 }
             }
         }
+
         for (Map.Entry<String, List<PageEntry>> entry : initData.entrySet()) {
             Collections.sort(entry.getValue());
         }
+
+        String text;
+        FileInputStream inputStream = new FileInputStream("stop-ru.txt");
+        try {
+            text = IOUtils.toString(inputStream);
+        } finally {
+            inputStream.close();
+        }
+        String[] words = text.split("\\P{IsAlphabetic}+");
+        stopWords.addAll(Arrays.asList(words));
 
     }
 
     @Override
     public String search(String word) {
         return new Gson().toJson(initData.get(word.toLowerCase()));
+    }
+
+    public String searchLine(String line) {
+        List<String> words = new ArrayList<>(List.of(line.toLowerCase().split("\\P{IsAlphabetic}+")));
+        words.removeIf(stopWords::contains);
+
+        List<PageEntry> pages = new ArrayList<>();
+        for (Map.Entry<String, List<PageEntry>> entry : initData.entrySet())
+            if (words.contains(entry.getKey()))
+                for (PageEntry pageEntry : entry.getValue()) pages.add(pageEntry);
+
+        List<PageEntry> result = new ArrayList<>();
+        for (PageEntry pageEntry : pages) {
+            PageEntry temp = new PageEntry(pageEntry.getPdfName(), pageEntry.getPage(), pageEntry.getCount());
+            for (PageEntry page : pages)
+                if (temp.getPdfName().equals(page.getPdfName())
+                        & temp.getPage() == page.getPage()) temp.setCount(temp.getCount() + page.getCount());
+            if (!result.contains(temp)) result.add(temp);
+        }
+
+        return new Gson().toJson(result);
+
     }
 
 }
